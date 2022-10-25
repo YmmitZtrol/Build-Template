@@ -1,31 +1,45 @@
 :: Arguments are:
-:: 				BUILD, DEBUG, RELEASE 	[Build Type - Default: DEBUG]
-::				run 					[Optional to run the programming after building]
-:: Example: build Release run
-:: Example: build run (build in DEBUG mode)
+:: 				BUILD, DEBUG, RELEASE 	[{Optional} Build Type - Default: DEBUG]
+::				run 					[{Optional} to run the programming after building]
+:: Note order doesn't matter so "buld release run" and "build run release" both work
 
 @ECHO OFF
+
 ECHO ----------------------------------------------------------------------------------------------------
 ECHO ^|                       ----- Running Premake and creating Cmake Files -----                       ^|
 ECHO ----------------------------------------------------------------------------------------------------
 premake5 cmake
+
+ECHO ----------------------------------------------------------------------------------------------------
+ECHO ^|                                  ----- Configuring Cmake -----                                   ^|
+ECHO ----------------------------------------------------------------------------------------------------
+cmake -S . -B ./build
+
 ECHO ----------------------------------------------------------------------------------------------------
 ECHO ^|                                   ----- Building Project -----                                   ^|
 ECHO ----------------------------------------------------------------------------------------------------
-cmake -S . -B ./build
-if [%1]==[] goto Default
-if [%1]=="run" goto Run
-if [%2]=="run" goto SpecificRun
 
-cmake --build ./build --config %1 
+set RunFlag=None
+set BuildFlag=DEBUG
 
-:Default
-cmake --build ./build --config DEBUG
+if [%1]==[run] set RunFlag=True
 
-:Run
-cmake --build ./build --config DEBUG
-.\run
+if [%2]==[run] (
+	set RunFlag=True 
+	set BuildFlag=%1
+)
 
-:SpecificRun
-cmake --build ./build --config %1
-.\run %1
+if NOT [%1]==[run] (
+	if NOT [%1]==[] (
+		set BuildFlag=%1
+	)
+) 
+
+cmake --build ./build --config %BuildFlag%
+if %RunFlag%==True (
+	cd build/%BuildFlag%
+	ParserCompiler.exe
+	cd ../../
+)
+
+
