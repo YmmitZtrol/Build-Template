@@ -77,6 +77,7 @@ goto Flag
 
 	if %RunFlag%==True (
 		cd build/%BuildFlag%
+		cls
 		ParserCompiler.exe
 		cd ../../
 	)
