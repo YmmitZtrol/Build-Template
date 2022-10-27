@@ -50,7 +50,6 @@ goto Flag
 	)
 
 :Build
-	ECHO %MinFlag%
 	if %MinFlag%==False (
 		ECHO ----------------------------------------------------------------------------------------------------
 		ECHO ^|                       ----- Running Premake and creating Cmake Files -----                       ^|
