@@ -1,45 +1,75 @@
 :: Arguments are:
 :: 				BUILD, DEBUG, RELEASE 	[{Optional} Build Type - Default: DEBUG]
 ::				run 					[{Optional} to run the programming after building]
-:: Note order doesn't matter so "buld release run" and "build run release" both work
+::				min 					[{Optional} to only run the build step and not the config]
+:: Note order doesn't matter
 
 @ECHO OFF
 
-ECHO ----------------------------------------------------------------------------------------------------
-ECHO ^|                       ----- Running Premake and creating Cmake Files -----                       ^|
-ECHO ----------------------------------------------------------------------------------------------------
-premake5 cmake
-
-ECHO ----------------------------------------------------------------------------------------------------
-ECHO ^|                                  ----- Configuring Cmake -----                                   ^|
-ECHO ----------------------------------------------------------------------------------------------------
-cmake -S . -B ./build
-
-ECHO ----------------------------------------------------------------------------------------------------
-ECHO ^|                                   ----- Building Project -----                                   ^|
-ECHO ----------------------------------------------------------------------------------------------------
-
-set RunFlag=None
+set RunFlag=False
 set BuildFlag=DEBUG
+set MinFlag=False
 
-if [%1]==[run] set RunFlag=True
+goto Flag
 
-if [%2]==[run] (
-	set RunFlag=True 
-	set BuildFlag=%1
-)
-
-if NOT [%1]==[run] (
-	if NOT [%1]==[] (
-		set BuildFlag=%1
+:Flag
+	if [%1]==[run] (
+		set RunFlag=True
+		goto Build
 	)
-) 
 
-cmake --build ./build --config %BuildFlag%
-if %RunFlag%==True (
-	cd build/%BuildFlag%
-	ParserCompiler.exe
-	cd ../../
-)
+	if [%2]==[run] (
+		set RunFlag=True 
+		if [%1]==[min] (
+			set MinFlag=True
+			if NOT [%3]==[] set BuildFlag=%3
+		)
+		goto Build
+	)
+
+	if [%3]==[run] (
+		set RunFlag=True 
+		if [%1]==[min] (
+			set MinFlag=True
+			set BuildFlag=%2
+		)
+		goto Build
+	)
+
+	if [%1]==[min] (
+		set MinFlag=True
+		if NOT [%2]==[] set BuildFlag=%2
+		goto Build
+	)
+
+	if [%2]==[min] (
+		set MinFlag=True
+		set BuildFlag=%1
+		goto Build
+	)
+
+:Build 
+	if [%MinFlag%]==[False] (
+		ECHO ----------------------------------------------------------------------------------------------------
+		ECHO ^|                       ----- Running Premake and creating Cmake Files -----                       ^|
+		ECHO ----------------------------------------------------------------------------------------------------
+		premake5 cmake
+
+		ECHO ----------------------------------------------------------------------------------------------------
+		ECHO ^|                                  ----- Configuring Cmake -----                                   ^|
+		ECHO ----------------------------------------------------------------------------------------------------
+		cmake -S . -B ./build
+	)
+
+	ECHO ----------------------------------------------------------------------------------------------------
+	ECHO ^|                                   ----- Building Project -----                                   ^|
+	ECHO ----------------------------------------------------------------------------------------------------
+	cmake --build ./build --config %BuildFlag%
+
+	if %RunFlag%==True (
+		cd build/%BuildFlag%
+		ParserCompiler.exe
+		cd ../../
+	)
 
 
