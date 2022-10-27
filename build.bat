@@ -18,10 +18,7 @@ goto Flag
 		if [%1]==[min] (
 			set MinFlag=True
 			if NOT [%3]==[] set BuildFlag=%3
-		)
-		else (
-			set BuildFlag=%1
-		)
+		) else set BuildFlag=%1
 		goto Build
 	)
 
@@ -30,28 +27,31 @@ goto Flag
 		if [%1]==[run] (
 			set RunFlag=True
 			if NOT [%3]==[] set BuildFlag=%3
-		)
-		else (
-			set BuildFlag=%1
-		)
-		goto Build
+		) else set BuildFlag=%1
+		goto Build 
 	)
 
-	if [%1]==[run]
-	(
+	if [%1]==[run] (
 		set RunFlag=True
-		if NOT [%2]==[] set BuildFlag=%2
-		goto Build
+		if NOT [%2]==[] (
+			set BuildFlag=%2
+			if NOT [%3]==[] set MinFlag=True
+		)
+		goto Build 
 	)
 
 	if [%1]==[min] (
 		set MinFlag=True
-		if NOT [%2]==[] set BuildFlag=%2
-		goto Build
+		if NOT [%2]==[] (
+			set BuildFlag=%2
+			if NOT [%3]==[] set RunFlag=True
+		)
+		goto Build 
 	)
 
-:Build 
-	if [%MinFlag%]==[False] (
+:Build
+	ECHO %MinFlag%
+	if %MinFlag%==False (
 		ECHO ----------------------------------------------------------------------------------------------------
 		ECHO ^|                       ----- Running Premake and creating Cmake Files -----                       ^|
 		ECHO ----------------------------------------------------------------------------------------------------
