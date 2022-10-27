@@ -1,7 +1,8 @@
 :: Arguments are:
 :: 				BUILD, DEBUG, RELEASE 	[{Optional} Build Type - Default: DEBUG]
-::				run 					[{Optional} to run the programming after building]
-::				min 					[{Optional} to only run the build step and not the config]
+::				run 					[{Optional} Run the program after building]
+::				min 					[{Optional} Run the build step but not the config]
+:: 				clean					[{Optional} Remove build files, only works as a standalone argument]
 :: Note order doesn't matter
 
 @ECHO OFF
@@ -9,6 +10,13 @@
 set RunFlag=False
 set BuildFlag=DEBUG
 set MinFlag=False
+
+if [%1]==[clean] (
+	rmdir /Q /S build
+	del /Q CmakeLists.txt
+	del /Q *.cmake
+	exit /B 0
+)
 
 goto Flag
 
