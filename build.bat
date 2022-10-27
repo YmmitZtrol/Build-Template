@@ -13,38 +13,40 @@ set MinFlag=False
 goto Flag
 
 :Flag
-	if [%1]==[run] (
-		set RunFlag=True
-		goto Build
-	)
-
 	if [%2]==[run] (
 		set RunFlag=True 
 		if [%1]==[min] (
 			set MinFlag=True
 			if NOT [%3]==[] set BuildFlag=%3
 		)
+		else (
+			set BuildFlag=%1
+		)
 		goto Build
 	)
 
-	if [%3]==[run] (
-		set RunFlag=True 
-		if [%1]==[min] (
-			set MinFlag=True
-			set BuildFlag=%2
+	if [%2]==[min] (
+		set MinFlag=True 
+		if [%1]==[run] (
+			set RunFlag=True
+			if NOT [%3]==[] set BuildFlag=%3
 		)
+		else (
+			set BuildFlag=%1
+		)
+		goto Build
+	)
+
+	if [%1]==[run]
+	(
+		set RunFlag=True
+		if NOT [%2]==[] set BuildFlag=%2
 		goto Build
 	)
 
 	if [%1]==[min] (
 		set MinFlag=True
 		if NOT [%2]==[] set BuildFlag=%2
-		goto Build
-	)
-
-	if [%2]==[min] (
-		set MinFlag=True
-		set BuildFlag=%1
 		goto Build
 	)
 
