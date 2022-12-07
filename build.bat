@@ -1,5 +1,5 @@
 :: Arguments are:
-:: 				BUILD, DEBUG, RELEASE 	[{Optional} Build Type - Default: DEBUG]
+:: 				DEBUG, RELEASE, DIST 	[{Optional} Build Type - Default: DEBUG]
 ::				run 					[{Optional} Run the program after building]
 ::				min 					[{Optional} Run the build step but not the config]
 :: 				clean					[{Optional} Remove build files, only works as a standalone argument]
