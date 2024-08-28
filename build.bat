@@ -10,6 +10,7 @@
 set RunFlag=False
 set BuildFlag=DEBUG
 set MinFlag=False
+set AppName=Appname
 
 if [%1]==[clean] (
 	rmdir /Q /S build
@@ -78,7 +79,7 @@ goto Flag
 	if %RunFlag%==True (
 		cd build/%BuildFlag%
 		cls
-		ParserCompiler.exe
+		%AppName%.exe
 		cd ../../
 	)
 
